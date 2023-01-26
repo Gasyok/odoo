@@ -24,7 +24,7 @@
 # Диляра Дельтаева <dilya.kz93@gmail.com>, 2021
 # Gennady Marchenko <gennadym@gmail.com>, 2021
 # Martin Trigaux, 2022
-# Валерий Хохлов, 2022
+# valmasone, 2022
 # Сергей Шебанин <sergey@shebanin.ru>, 2022
 # 
 msgid ""
@@ -2497,7 +2497,7 @@ msgstr ""
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.stock_warn_insufficient_qty_scrap_form_view
 msgid "Do you confirm you want to scrap"
-msgstr ""
+msgstr "Подтвердите, чтобы отправить в отходы"
 
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.res_config_settings_view_form
@@ -3564,7 +3564,7 @@ msgstr "Потери при Инвентаризации"
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.report_product_product_replenishment
 msgid "Inventory On Hand"
-msgstr ""
+msgstr "Запасы в наличии"
 
 #. module: stock
 #: model:ir.actions.act_window,name:stock.stock_picking_type_action
@@ -6864,7 +6864,7 @@ msgstr ""
 #. module: stock
 #: model_terms:ir.ui.view,arch_db:stock.view_picking_form
 msgid "Set quantities"
-msgstr ""
+msgstr "Указать количество"
 
 #. module: stock
 #: model:ir.model.fields,help:stock.field_stock_move__location_id
@@ -8976,6 +8976,12 @@ msgstr ""
 "Вы не можете изменить тип товара, который сейчас зарезервировано для "
 "перемещения запасов. Если вам нужно изменить тип, вам сначала нужно снять "
 "резерв складских перемещений."
+
+#. module: stock
+#: code:addons/stock/models/product.py:0
+#, python-format
+msgid "You can not change the type of a product that was already used."
+msgstr ""
 
 #. module: stock
 #: code:addons/stock/models/stock_move_line.py:0

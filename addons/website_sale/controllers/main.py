@@ -386,6 +386,7 @@ class WebsiteSale(http.Controller):
             'pricelist': pricelist,
             'add_qty': add_qty,
             'products': products,
+            'search_product': search_product,
             'search_count': product_count,  # common for all searchbox
             'bins': TableCompute().process(products, ppg, ppr),
             'ppg': ppg,
@@ -1272,8 +1273,12 @@ class PaymentPortal(payment_portal.PaymentPortal):
         if order_sudo.state == "cancel":
             raise ValidationError(_("The order has been canceled."))
 
+        if tools.float_compare(kwargs['amount'], order_sudo.amount_total, precision_rounding=order_sudo.currency_id.rounding):
+            raise ValidationError(_("The cart has been updated. Please refresh the page."))
+
         kwargs.update({
             'reference_prefix': None,  # Allow the reference to be computed based on the order
+            'partner_id': order_sudo.partner_id.id,
             'sale_order_id': order_id,  # Include the SO to allow Subscriptions to tokenize the tx
         })
         kwargs.pop('custom_create_values', None)  # Don't allow passing arbitrary create values

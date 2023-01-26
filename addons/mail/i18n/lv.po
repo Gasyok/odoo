@@ -11,6 +11,7 @@
 # Martin Trigaux, 2022
 # JanisJanis <jbojars@gmail.com>, 2022
 # Anzelika Adejanova, 2022
+# Armīns Jeltajevs <armins.jeltajevs@gmail.com>, 2023
 # 
 msgid ""
 msgstr ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-01-24 08:19+0000\n"
 "PO-Revision-Date: 2021-09-14 12:23+0000\n"
-"Last-Translator: Anzelika Adejanova, 2022\n"
+"Last-Translator: Armīns Jeltajevs <armins.jeltajevs@gmail.com>, 2023\n"
 "Language-Team: Latvian (https://www.transifex.com/odoo/teams/41243/lv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3040,7 +3041,7 @@ msgstr ""
 #. module: mail
 #: model:ir.ui.menu,name:mail.mail_guest_menu
 msgid "Guests"
-msgstr ""
+msgstr "Viesi"
 
 #. module: mail
 #: model:ir.model,name:mail.model_ir_http
@@ -3374,22 +3375,22 @@ msgstr "Attēls"
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_guest__image_1024
 msgid "Image 1024"
-msgstr ""
+msgstr "Attēls 1024"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_guest__image_128
 msgid "Image 128"
-msgstr ""
+msgstr "Attēls 128"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_guest__image_256
 msgid "Image 256"
-msgstr ""
+msgstr "Attēls 256"
 
 #. module: mail
 #: model:ir.model.fields,field_description:mail.field_mail_guest__image_512
 msgid "Image 512"
-msgstr ""
+msgstr "Attēls 512"
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.view_document_file_kanban
@@ -5303,22 +5304,6 @@ msgid "Please complete customer's information"
 msgstr ""
 
 #. module: mail
-#. openerp-web
-#: code:addons/mail/static/src/components/composer_suggested_recipient/composer_suggested_recipient.js:0
-#, python-format
-msgid "Invalid Partner"
-msgstr ""
-
-#. module: mail
-#. openerp-web
-#: code:addons/mail/static/src/components/composer_suggested_recipient/composer_suggested_recipient.js:0
-#, python-format
-msgid ""
-"The information you have entered does not match the existing contact "
-"information for this record. The partner was not created."
-msgstr ""
-
-#. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_bounce_catchall
 msgid "Please contact us instead using"
 msgstr ""
@@ -7139,7 +7124,7 @@ msgstr ""
 #: model:ir.model.fields,help:mail.field_res_partner__activity_exception_decoration
 #: model:ir.model.fields,help:mail.field_res_users__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Reģistrētās izņēmuma aktivitātes veids."
 
 #. module: mail
 #. openerp-web
@@ -7175,6 +7160,7 @@ msgstr ""
 #, python-format
 msgid "Unable to post message, please configure the sender's email address."
 msgstr ""
+"Nevar publicēt ziņojumu, lūdzu, konfigurējiet sūtītāja e-pasta adresi."
 
 #. module: mail
 #: model_terms:ir.ui.view,arch_db:mail.mail_blacklist_view_form
@@ -7219,7 +7205,7 @@ msgstr ""
 #: model:ir.model.fields.selection,name:mail.selection__mail_notification__failure_type__unknown
 #, python-format
 msgid "Unknown error"
-msgstr ""
+msgstr "Nezināma kļūda"
 
 #. module: mail
 #. openerp-web

@@ -1890,6 +1890,9 @@ exports.PosModel = Backbone.Model.extend({
     htmlToImgLetterRendering() {
         return false;
     },
+    doNotAllowRefundAndSales() {
+        return false;
+    }
 });
 
 /**
@@ -2167,7 +2170,7 @@ exports.Orderline = Backbone.Model.extend({
         var pack_lot_lines = json.pack_lot_ids;
         for (var i = 0; i < pack_lot_lines.length; i++) {
             var packlotline = pack_lot_lines[i][2];
-            var pack_lot_line = new exports.Packlotline({}, {'json': _.extend(packlotline, {'order_line':this})});
+            var pack_lot_line = new exports.Packlotline({}, {'json': _.extend({...packlotline}, {'order_line':this})});
             this.pack_lot_lines.add(pack_lot_line);
         }
         this.tax_ids = json.tax_ids && json.tax_ids.length !== 0 ? json.tax_ids[0][2] : undefined;
@@ -3284,6 +3287,9 @@ exports.Order = Backbone.Model.extend({
         }
         line.order = this;
         this.orderlines.add(line);
+        this.selectLastOrderline(line);
+    },
+    selectLastOrderline: function(line){
         this.select_orderline(this.get_last_orderline());
     },
     get_orderline: function(id){
@@ -3322,7 +3328,7 @@ exports.Order = Backbone.Model.extend({
             moment(this.validation_date), {}, {timezone: false});
     },
 
-    set_tip: function(tip) {
+    set_tip: async function(tip) {
         var tip_product = this.pos.db.get_product_by_id(this.pos.config.tip_product_id[0]);
         var lines = this.get_orderlines();
         if (tip_product) {
@@ -3335,7 +3341,7 @@ exports.Order = Backbone.Model.extend({
                     return;
                 }
             }
-            return this.add_product(tip_product, {
+            return await this.add_product(tip_product, {
               is_tip: true,
               quantity: 1,
               price: tip,
@@ -3360,17 +3366,33 @@ exports.Order = Backbone.Model.extend({
     remove_orderline: function( line ){
         this.assert_editable();
         this.orderlines.remove(line);
-        this.select_orderline(this.get_last_orderline());
+        if (this.selected_orderline === line) {
+            this.select_orderline(this.get_last_orderline());
+        }
     },
 
     fix_tax_included_price: function(line){
         line.set_unit_price(line.compute_fixed_price(line.price));
     },
 
-    add_product: function(product, options){
+    _isRefundAndSaleOrder: function() {
+        if(this.orderlines.length && this.orderlines.models[0].refunded_orderline_id)
+            return true;
+        else
+            return false;
+    },
+
+    add_product: async function(product, options){
+        if(this.pos.doNotAllowRefundAndSales() && this._isRefundAndSaleOrder()) {
+            await Gui.showPopup('ErrorPopup',{
+                    'title': _t("POS error"),
+                    'body':  _t("Can't mix order with refund products with new products."),
+                });
+            return false;
+        }
         if(this._printed){
             this.destroy();
-            return this.pos.get_order().add_product(product, options);
+            return await this.pos.get_order().add_product(product, options);
         }
         this.assert_editable();
         options = options || {};
@@ -3389,7 +3411,7 @@ exports.Order = Backbone.Model.extend({
             to_merge_orderline.merge(line);
             this.select_orderline(to_merge_orderline);
         } else {
-            this.orderlines.add(line);
+            this.add_orderline(line);
             this.select_orderline(this.get_last_orderline());
         }
 

@@ -206,7 +206,7 @@ class PosOrder(models.Model):
         invoice_lines = []
         for line in self.lines:
             invoice_lines.append((0, None, self._prepare_invoice_line(line)))
-            if line.order_id.pricelist_id.discount_policy == 'without_discount' and line.price_unit != line.product_id.lst_price:
+            if line.order_id.pricelist_id.discount_policy == 'without_discount' and float_compare(line.price_unit, line.product_id.lst_price, precision_rounding=self.currency_id.rounding) < 0:
                 invoice_lines.append((0, None, {
                     'name': _('Price discount from %s -> %s',
                               float_repr(line.product_id.lst_price, self.currency_id.decimal_places),
@@ -442,6 +442,7 @@ class PosOrder(models.Model):
     def action_stock_picking(self):
         self.ensure_one()
         action = self.env['ir.actions.act_window']._for_xml_id('stock.action_picking_tree_ready')
+        action['display_name'] = _('Pickings')
         action['context'] = {}
         action['domain'] = [('id', 'in', self.picking_ids.ids)]
         return action
@@ -869,6 +870,10 @@ class PosOrder(models.Model):
         """This function is here to be overriden"""
         return []
 
+    def _prepare_order_line(self, order_line):
+        """This function is here to be overriden"""
+        return order_line
+
     def export_for_ui(self):
         """ Returns a list of dict with each item having similar signature as the return of
             `export_as_JSON` of models.Order. This is useful for back-and-forth communication
@@ -1039,6 +1044,7 @@ class PosOrderLine(models.Model):
             'pack_lot_ids': [[0, 0, lot] for lot in orderline.pack_lot_ids.export_for_ui()],
             'customer_note': orderline.customer_note,
             'refunded_qty': orderline.refunded_qty,
+            'refunded_orderline_id': orderline.refunded_orderline_id,
         }
 
     def export_for_ui(self):

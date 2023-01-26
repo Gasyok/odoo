@@ -84,6 +84,28 @@ describe('Editor', () => {
                 });
             });
         });
+        describe('allowInlineAtRoot options', () => {
+            it('should wrap inline node inside a p by default', async () => {
+                await testEditor(BasicEditor, {
+                    contentBefore: 'abc',
+                    contentAfter: '<p style="margin-bottom: 0px;">abc</p>',
+                });
+            });
+            it('should wrap inline node inside a p if value is false', async () => {
+                await testEditor(BasicEditor, {
+                    contentBefore: 'abc',
+                    contentAfter: '<p style="margin-bottom: 0px;">abc</p>',
+                }, { allowInlineAtRoot: false }
+                );
+            });
+            it('should keep inline nodes unchanged if value is true', async () => {
+                await testEditor(BasicEditor, {
+                    contentBefore: 'abc',
+                    contentAfter: 'abc',
+                }, { allowInlineAtRoot: true, }
+                );
+            });
+        });
     });
     describe('deleteForward', () => {
         describe('Selection collapsed', () => {
@@ -3284,6 +3306,27 @@ X[]
                 },
             });
         });
+        it('should return an image in a parent selection', async () => {
+            await testEditor(BasicEditor, {
+                contentBefore: '<div id="parent-element-to-select"><img/></div>',
+                stepFunction: editor => {
+                    const sel = editor.document.getSelection();
+                    const range = editor.document.createRange();
+                    const parent = editor.document.querySelector('div#parent-element-to-select');
+                    range.setStart(parent, 0);
+                    range.setEnd(parent, 1);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                    window.chai
+                        .expect(
+                            getTraversedNodes(editor.editable).map(node =>
+                                node.nodeType === Node.TEXT_NODE ? node.textContent : node.nodeName,
+                            ),
+                        )
+                        .to.eql(['DIV', 'IMG']);
+                },
+            });
+        });
     });
 
     describe('automatic link creation when typing a space after an url', () => {
@@ -3790,6 +3833,22 @@ X[]
                     contentAfter: '<p>a[b<span>]\u200B</span>cd</p>',
                     // Final state: '<p>a[]b<span>\u200B</span>cd</p>'
                 });
+            });
+        });
+        it('should apply a color to a slice of text containing a span', async () => {
+            await testEditor(BasicEditor, {
+                contentBefore: '<p>a[b<span>c</span>d]e</p>',
+                stepFunction: editor => editor.execCommand('applyColor', 'rgb(255, 0, 0)', 'color'),
+                contentAfter: '<p>a<font style="color: rgb(255, 0, 0);">[b<span>c</span>d]</font>e</p>',
+            });
+        });
+        it('should distribute color to texts and to button separately', async () => {
+            await testEditor(BasicEditor, {
+                contentBefore: '<p>a[b<a class="btn">c</a>d]e</p>',
+                stepFunction: editor => editor.execCommand('applyColor', 'rgb(255, 0, 0)', 'color'),
+                contentAfter: '<p>a<font style="color: rgb(255, 0, 0);">[b</font>' +
+                    '<a class="btn"><font style="color: rgb(255, 0, 0);">c</font></a>' +
+                    '<font style="color: rgb(255, 0, 0);">d]</font>e</p>',
             });
         });
     });
